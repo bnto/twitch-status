@@ -1,6 +1,6 @@
 {
   "name": "twitch-status",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "CLI app to check if the live streams you follow are online",
   "bin": {
     "twis": "./index.js"
