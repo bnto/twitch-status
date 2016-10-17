@@ -2,22 +2,15 @@
 
 var request = require('request');
 var colors = require('colors');
-var figlet = require('figlet');
-var inquirer = require('inquirer');
 
 const url = 'https://api.twitch.tv/kraken/streams/';
-const question = [
-	{
-		type: 'input',
-		name: 'username',
-		message: 'What is your twitch username?',
-	}];
-
-var inquirer = require('inquirer');
-inquirer.prompt(question).then(function (answers) {
-    const profile = 'https://api.twitch.tv/kraken/users/'+ answers.username + '/follows/channels?limit=100&sortby=last_broadcast';
-    getFollowers(profile);
-});
+const args = process.argv[2] || 'twitch';
+const profile = 'https://api.twitch.tv/kraken/users/'+ args + '/follows/channels?limit=100&sortby=last_broadcast';
+const clientid = '1ntwh8zod2d82dtyw88r9i6ff5pw2zv';
+const options = {url: url,headers: {'Client-ID': clientid}};
+getFollowers(profile);
+//console.log(args);
+console.log('     Twitch streamers status     '.inverse + '\r');
 
 /*const profile = 'https://api.twitch.tv/kraken/users/cloudy/follows/channels?limit=100&sortby=last_broadcast';
 getFollowers(profile);*/
@@ -25,7 +18,7 @@ getFollowers(profile);*/
 
 function getFollowers(val){
 
-	request(val, (err, res, body) => {
+	request({url: val,headers:{'Client-ID': clientid}}, (err, res, body) => {
 	    var streamers = [];
 
 		if(!err && res.statusCode === 200){
@@ -37,7 +30,7 @@ function getFollowers(val){
 
 			//console.log(streamers);
 			//streamers.sort();
-			showText();
+			//showText();
 			streamers.forEach( (val) => display(val));
 		}
 	})
@@ -59,7 +52,7 @@ function showText() {
 
 function display(val){
 
-	request(url + val, (err, res, body) => {
+	request({url: url + val,headers:{'Client-ID': clientid}}, (err, res, body) => {
 		if(!err && res.statusCode === 200) {
 			data = JSON.parse(body);
 
@@ -70,7 +63,7 @@ function display(val){
 	          });
 	        } else {
 	        	var time = parseTwitterDate(data.stream.created_at);
-	        	console.log((data.stream.channel.display_name).bgBlue.white + ' is playing: ' + data.stream.channel.game + ' (' + time + ')' + '\r\n' + data.stream.channel.status + '\r\n');
+	        	console.log((data.stream.channel.display_name).bgBlue.white + ' is playing: ' + data.stream.channel.game + ' (' + time + ')' + '\r\n' + data.stream.channel.status + '\r');
 	        }
 		} else {
 			console.log('Oups, something went wrong... :(');
